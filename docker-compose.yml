@@ -1,0 +1,72 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg17
+    container_name: openellie-postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: openellie
+      POSTGRES_PASSWORD: openellie
+      POSTGRES_DB: openellie
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U openellie -d openellie"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  redis:
+    image: redis:7.4-alpine
+    container_name: openellie-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata:/data
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
+
+  bot:
+    build:
+      context: .
+      dockerfile: docker/bot.Dockerfile
+      target: development
+    container_name: openellie-bot
+    restart: unless-stopped
+    ports:
+      - "${BOT_PORT:-3000}:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://openellie:openellie@postgres:5432/openellie
+      REDIS_URL: redis://redis:6379
+      NODE_ENV: development
+    volumes:
+      - ./apps/bot/src:/app/apps/bot/src:ro
+      - ./packages:/app/packages:ro
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3000/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+volumes:
+  pgdata:
+    driver: local
+  redisdata:
+    driver: local

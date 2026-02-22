@@ -1,0 +1,12 @@
+{
+  "name": "@openellie/tsconfig",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Shared TypeScript configurations for OpenEllie monorepo",
+  "license": "MIT",
+  "files": [
+    "base.json",
+    "nextjs.json",
+    "node.json"
+  ]
+}

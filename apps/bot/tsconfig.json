@@ -1,0 +1,15 @@
+{
+  "extends": "@openellie/tsconfig/node.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "paths": {
+      "@openellie/db": ["../../packages/db/src/index.ts"],
+      "@openellie/db/*": ["../../packages/db/src/*"],
+      "@openellie/shared/types": ["../../packages/shared/src/types/index.ts"],
+      "@openellie/shared/utils": ["../../packages/shared/src/utils/index.ts"],
+      "@openellie/shared/constants": ["../../packages/shared/src/constants/index.ts"]
+    }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}

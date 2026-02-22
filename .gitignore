@@ -1,0 +1,48 @@
+# dependencies
+node_modules
+.pnpm-store
+
+# build outputs
+dist
+.next
+out
+build
+
+# turbo
+.turbo
+
+# environment files
+.env
+.env.local
+.env.production
+.env.*.local
+
+# logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# testing
+coverage
+playwright-report
+test-results
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# drizzle generated migrations (committed, but not SQLite journal)
+*.sqlite
+*.db
+
+# TypeScript
+*.tsbuildinfo
+
+# Docker
+docker-compose.override.yml
